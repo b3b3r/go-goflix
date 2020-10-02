@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS movie
 (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	title TEXT,
-	realease_date TEXT,
+	release_date TEXT,
 	duration INTEGER,
 	trailer_url TEXT
 )
