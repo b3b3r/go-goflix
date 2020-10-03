@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -62,9 +63,37 @@ func TestMovieCreateUnit(t *testing.T) {
 	err := json.NewEncoder(&buf).Encode(p)
 	assert.Nil(t, err)
 
-	r := httptest.NewRequest("POST", "/api/movies/", &buf)
+	r := httptest.NewRequest("POST", "/api/movies", &buf)
 	w := httptest.NewRecorder()
 
 	srv.handleMovieCreate()(w, r)
+	assert.Equal(t, http.StatusOK, w.Code)
+}
+
+func TestMovieCreateIntegration(t *testing.T) {
+	srv := newServer()
+	srv.store = &testStore{}
+
+	p := struct {
+		Title       string `json:"title"`
+		ReleaseDate string `json:"release_date"`
+		Duration    int    `json:"duration"`
+		TrailerURL  string `json:"trailer_url"`
+	}{
+		Title:       "Coucou",
+		ReleaseDate: "1984",
+		Duration:    35,
+		TrailerURL:  "coucou",
+	}
+	var buf bytes.Buffer
+	err := json.NewEncoder(&buf).Encode(p)
+	assert.Nil(t, err)
+
+	r := httptest.NewRequest("POST", "/api/movies", &buf)
+	w := httptest.NewRecorder()
+
+	srv.serveHTTP(w, r)
+	fmt.Println(http.StatusOK)
+	fmt.Println(w.Code)
 	assert.Equal(t, http.StatusOK, w.Code)
 }
