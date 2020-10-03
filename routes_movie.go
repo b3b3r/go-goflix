@@ -64,3 +64,36 @@ func (s *server) handleMovieDetail() http.HandlerFunc {
 		s.respond(w, r, resp, http.StatusOK)
 	}
 }
+
+func (s *server) handleMovieCreate() http.HandlerFunc {
+	type requestMovie struct {
+		Title       string `json:"title"`
+		ReleaseDate string `json:"release_date"`
+		Duration    int    `json:"duration"`
+		TrailerURL  string `json:"trailer_url"`
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := requestMovie{}
+		err := s.decode(w, r, &req)
+		if err != nil {
+			log.Printf("Cannot parse movie body, err=%v\n", err)
+			s.respond(w, r, nil, http.StatusBadRequest)
+			return
+		}
+		m := &Movie{
+			ID:          0,
+			Title:       req.Title,
+			ReleaseDate: req.ReleaseDate,
+			Duration:    req.Duration,
+			TrailerURL:  req.TrailerURL,
+		}
+		err = s.store.CreateMovie(m)
+		if err != nil {
+			log.Printf("Cannot create movie, err=%v\n", err)
+			s.respond(w, r, nil, http.StatusInternalServerError)
+			return
+		}
+		resp := mapMovieToJSON(m)
+		s.respond(w, r, resp, http.StatusOK)
+	}
+}
