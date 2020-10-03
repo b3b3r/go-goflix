@@ -90,6 +90,8 @@ func TestMovieCreateIntegration(t *testing.T) {
 	assert.Nil(t, err)
 
 	r := httptest.NewRequest("POST", "/api/movies", &buf)
+	token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDE3NjUwMzAsImlhdCI6MTYwMTc2MTQzMCwidXNlcm5hbWUiOiJnb2xhbmcifQ.idt5O9kRvW8nAISi0e-sf6rr05xWsXYZNoOITeyeSB0"
+	r.Header.Set("Authorization", fmt.Sprintf("Bearer %v", token))
 	w := httptest.NewRecorder()
 
 	srv.serveHTTP(w, r)
