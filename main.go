@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 )
 
@@ -12,12 +13,15 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	movies, err := srv.store.GetMovies()
+	defer srv.store.Close()
+
+	http.HandleFunc("/", srv.serveHTTP)
+	fmt.Println("Server listening on port 8000")
+	err = http.ListenAndServe(":8000", nil)
 	if err != nil {
 		return err
 	}
-	fmt.Println(movies)
-	defer srv.store.Close()
+
 	return nil
 }
 
