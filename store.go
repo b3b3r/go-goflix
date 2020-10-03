@@ -12,6 +12,7 @@ type Store interface {
 	Open() error
 	Close() error
 	GetMovies() ([]*Movie, error)
+	GetMovieByID(id int64) (*Movie, error)
 }
 
 type dbStore struct {
@@ -51,4 +52,13 @@ func (store *dbStore) GetMovies() ([]*Movie, error) {
 		return movies, err
 	}
 	return movies, nil
+}
+
+func (store *dbStore) GetMovieByID(id int64) (*Movie, error) {
+	var movie = &Movie{}
+	err := store.db.Get(movie, "SELECT * FROM movie WHERE id=$1", id)
+	if err != nil {
+		return movie, err
+	}
+	return movie, nil
 }

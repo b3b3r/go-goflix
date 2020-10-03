@@ -3,6 +3,9 @@ package main
 import (
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type jsonMovie struct {
@@ -36,6 +39,28 @@ func (s *server) handleMovieList() http.HandlerFunc {
 			resp[i] = mapMovieToJSON(m)
 		}
 
+		s.respond(w, r, resp, http.StatusOK)
+	}
+}
+
+func (s *server) handleMovieDetail() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		id, err := strconv.ParseInt(vars["id"], 10, 64)
+		if err != nil {
+			log.Printf("Cannot parse id to int, err=%v\n", err)
+			s.respond(w, r, nil, http.StatusBadRequest)
+			return
+		}
+
+		movie, err := s.store.GetMovieByID(id)
+		if err != nil {
+			log.Printf("Cannot load movie, err=%v\n", err)
+			s.respond(w, r, nil, http.StatusInternalServerError)
+			return
+		}
+
+		resp := mapMovieToJSON(movie)
 		s.respond(w, r, resp, http.StatusOK)
 	}
 }
