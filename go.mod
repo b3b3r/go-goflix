@@ -1,4 +1,4 @@
-module training.go/goflix
+module github.com/b3b3r/go-goflix
 
 go 1.15
 

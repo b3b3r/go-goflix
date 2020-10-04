@@ -1,5 +1,6 @@
 github.com/auth0/go-jwt-middleware v0.0.0-20200810150920-a32d7af194d1 h1:lnVadil6o8krZE47ms2PCxhXcki/UwoqiB0axOIV3mk=
 github.com/auth0/go-jwt-middleware v0.0.0-20200810150920-a32d7af194d1/go.mod h1:mF0ip7kTEFtnhBJbd/gJe62US3jykNN+dcZoZakJCCA=
+github.com/b3b3r/go-goflix v0.0.0-20201004093443-a0981197d4b8 h1:N4BN2wzmn+VNEw9WEED+Zm+0NBckHN08tld6IrcFQiU=
 github.com/codegangsta/inject v0.0.0-20150114235600-33e0aa1cb7c0/go.mod h1:4Zcjuz89kmFXt9morQgcfYZAYZ5n8WHjt81YYWIwtTM=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
