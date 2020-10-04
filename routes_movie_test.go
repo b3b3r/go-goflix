@@ -44,6 +44,17 @@ func (t testStore) CreateMovie(m *Movie) error {
 	return nil
 }
 
+func (t testStore) CreateUser(m *Movie) error {
+	t.movieID++
+	m.ID = t.movieID
+	t.movies = append(t.movies, m)
+	return nil
+}
+
+func (t testStore) FindUser(username, password string) (bool, error) {
+	return true, nil
+}
+
 func TestMovieCreateUnit(t *testing.T) {
 	srv := newServer()
 	srv.store = &testStore{}

@@ -14,6 +14,9 @@ type Store interface {
 	GetMovies() ([]*Movie, error)
 	GetMovieByID(id int64) (*Movie, error)
 	CreateMovie(m *Movie) error
+	CreateUser(u *User) error
+	GetUserByID(id int64) (*User, error)
+	FindUser(username, password string) (bool, error)
 }
 
 type dbStore struct {
@@ -28,8 +31,14 @@ CREATE TABLE IF NOT EXISTS movie
 	release_date TEXT,
 	duration INTEGER,
 	trailer_url TEXT
-)
-`
+);
+
+CREATE TABLE IF NOT EXISTS user
+(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	username TEXT,
+	password TEXT
+);`
 
 func (store *dbStore) Open() error {
 	db, err := sqlx.Connect("sqlite3", "goflix.db")
@@ -74,4 +83,34 @@ func (store *dbStore) CreateMovie(m *Movie) error {
 
 	m.ID, err = res.LastInsertId()
 	return err
+}
+
+func (store *dbStore) CreateUser(u *User) error {
+	res, err := store.db.Exec("INSERT INTO user (username, password) VALUES(?,?)",
+		u.Username, u.Password)
+
+	if err != nil {
+		return err
+	}
+
+	u.ID, err = res.LastInsertId()
+	return err
+}
+
+func (store *dbStore) GetUserByID(id int64) (*User, error) {
+	var user = &User{}
+	err := store.db.Get(user, "SELECT * FROM user WHERE id=$1", id)
+	if err != nil {
+		return user, err
+	}
+	return user, nil
+}
+
+func (store *dbStore) FindUser(username, password string) (bool, error) {
+	var count int
+	err := store.db.Get(&count, "SELECT COUNT(id) FROM user WHERE username=$1 AND password=$2", username, password)
+	if err != nil {
+		return false, err
+	}
+	return count == 1, nil
 }
